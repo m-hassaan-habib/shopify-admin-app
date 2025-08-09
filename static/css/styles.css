@@ -1,0 +1,98 @@
+:root {
+    --primary: #3a5eb4;
+    --secondary: #f4f6fb;
+    --text: #111;
+    --muted: #666;
+    --border: #e9edf7;
+    --success: #22a06b;
+    --danger: #e55353;
+    --warning: #e6a100;
+    --info: #0ea5e9;
+}
+
+body {
+    font-family: Inter, system-ui, sans-serif;
+    color: var(--text);
+    background-color: var(--secondary);
+}
+
+.card {
+    border: 1px solid var(--border);
+    border-radius: 0.5rem;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.btn-primary {
+    background-color: var(--primary);
+    border-color: var(--primary);
+    border-radius: 1rem;
+}
+
+.btn-primary:hover {
+    background-color: #2a4a9a;
+    border-color: #2a4a9a;
+}
+
+.status-pill {
+    padding: 0.25rem 0.75rem;
+    border-radius: 1rem;
+    font-size: 0.875rem;
+}
+
+.status-fulfilled {
+    background-color: rgba(34, 160, 107, 0.1);
+    color: var(--success);
+}
+
+.status-unfulfilled {
+    background-color: rgba(230, 161, 0, 0.1);
+    color: var(--warning);
+}
+
+.status-cancelled {
+    background-color: rgba(229, 83, 83, 0.1);
+    color: var(--danger);
+}
+
+.tag-chip {
+    display: inline-block;
+    background-color: var(--border);
+    color: var(--muted);
+    padding: 0.25rem 0.75rem;
+    border-radius: 1rem;
+    font-size: 0.875rem;
+    margin: 0.25rem;
+}
+
+.table-sticky thead th {
+    position: sticky;
+    top: 0;
+    background-color: white;
+    z-index: 1;
+}
+
+.loading-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+}
+
+.loading-overlay.active {
+    display: flex;
+}
+
+@media (max-width: 576px) {
+    .table-responsive td {
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        max-width: 150px;
+    }
+}
