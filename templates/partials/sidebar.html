@@ -1,0 +1,31 @@
+<nav class="col-md-3 col-lg-2 d-md-block bg-light sidebar collapse">
+    <div class="position-sticky pt-3">
+        <ul class="nav flex-column">
+            <li class="nav-item">
+                <a class="nav-link {{ 'active' if active_page == 'dashboard' else '' }}" href="{{ url_for('dashboard.index') }}">
+                    <i class="bi bi-house"></i> Dashboard
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link {{ 'active' if active_page == 'orders' else '' }}" href="{{ url_for('orders.list_orders') }}">
+                    <i class="bi bi-cart"></i> Orders
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link {{ 'active' if active_page == 'analytics' else '' }}" href="{{ url_for('analytics.index') }}">
+                    <i class="bi bi-bar-chart"></i> Analytics
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link {{ 'active' if active_page == 'connect' else '' }}" href="{{ url_for('connect.manage_store') }}">
+                    <i class="bi bi-plug"></i> Connect
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link {{ 'active' if active_page == 'documents' else '' }}" href="{{ url_for('documents.docs_page') }}">
+                <i class="bi bi-file-earmark-pdf"></i> Documents
+                </a>
+            </li>
+        </ul>
+    </div>
+</nav>
