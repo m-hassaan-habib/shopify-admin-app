@@ -1,5 +1,9 @@
 from flask import Blueprint, flash
 from passlib.hash import bcrypt
+import os, sys
+
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+
 from db import execute_insert
 from auth import require_login
 

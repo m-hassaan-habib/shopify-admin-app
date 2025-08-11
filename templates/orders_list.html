@@ -105,9 +105,17 @@
                                 {% endfor %}
                             </td>
                             <td>
-                                <a href="{{ url_for('orders.generate_pdf', order_id=order.id) }}" class="btn btn-sm btn-outline-info" title="Download PDF">
-                                    <i class="bi bi-file-pdf"></i>
-                                </a>
+                               <div class="btn-group" role="group">
+                                   <a href="{{ url_for('orders.pdf_label', order_id=order.id) }}" class="btn btn-sm btn-outline-secondary" title="Label">
+                                       <i class="bi bi-tag"></i>
+                                   </a>
+                                   <a href="{{ url_for('orders.pdf_front', order_id=order.id) }}" class="btn btn-sm btn-outline-info" title="Money Order (Front)">
+                                       <i class="bi bi-file-earmark-text"></i>
+                                   </a>
+                                   <a href="{{ url_for('orders.pdf_back', order_id=order.id) }}" class="btn btn-sm btn-outline-dark" title="Money Order (Back)">
+                                       <i class="bi bi-file-earmark"></i>
+                                   </a>
+                               </div>
                                 {% if order.fulfillment_status == 'unfulfilled' %}
                                     <form method="POST" action="{{ url_for('orders.fulfill', order_id=order.id) }}" class="d-inline">
                                         <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">

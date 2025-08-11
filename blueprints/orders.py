@@ -1,13 +1,15 @@
-from flask import Blueprint, render_template, request, redirect, url_for, flash, send_file, Response, g, session
+import csv
+import io
+import sys
+import os
+from flask import Blueprint, render_template, request, redirect, url_for, flash, send_file, Response, g, session, send_file
 from services.shopify_sync import sync_orders
 from services.fulfillment import fulfill_order
 from services.cancellation import cancel_order
 from services.pdfs import generate_money_order_pdf
 from datetime import datetime, timedelta
-import csv
-import io
-import sys
-import os
+from services.pdf_fill import fill_pdf_form, stamp_pdf
+from services.company_profile import get_company_profile
 
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
@@ -229,3 +231,54 @@ def export_csv():
         mimetype='text/csv',
         headers={'Content-Disposition': 'attachment; filename=cod_orders.csv'}
     )
+
+
+def _active_doc(doc_type):
+    row = execute_query(
+        "SELECT id, file_path, field_map_json, coordinate_map_json, fill_mode, font_name FROM shop_documents WHERE doc_type=%s AND is_active=1 ORDER BY uploaded_at DESC LIMIT 1",
+        (doc_type,), dictionary=True
+    )
+    return row[0] if row else None
+
+
+@blueprint.route('/orders/<int:order_id>/pdf/front')
+@require_login
+def pdf_front(order_id):
+    order = execute_query("SELECT o.*, s.shop_url FROM cod_orders o JOIN shopify_stores s ON o.shop_id=s.id WHERE o.id=%s", (order_id,), dictionary=True)[0]
+    profile = get_company_profile()
+    data = {"order": order, "profile": profile}
+    doc = _active_doc('money_order_front')
+    if not doc:
+        return ('Not configured', 404)
+    if doc['fill_mode'] == 'stamp':
+        buf = stamp_pdf(doc['file_path'], doc['coordinate_map_json'], data, doc['font_name'])
+    else:
+        merged = {**order, **{f"profile_{k}": v for k, v in profile.items()}}
+        buf = fill_pdf_form(doc['file_path'], doc['field_map_json'], merged)
+    return send_file(buf, as_attachment=True, download_name=f"money_order_front_{order['name']}.pdf", mimetype='application/pdf')
+
+
+@blueprint.route('/orders/<int:order_id>/pdf/back')
+@require_login
+def pdf_back(order_id):
+    doc = _active_doc('money_order_back')
+    if not doc:
+        return ('Not configured', 404)
+    return send_file(doc['file_path'], as_attachment=True, download_name=f"money_order_back_{order_id}.pdf", mimetype='application/pdf')
+
+
+@blueprint.route('/orders/<int:order_id>/pdf/label')
+@require_login
+def pdf_label(order_id):
+    order = execute_query("SELECT o.*, s.shop_url FROM cod_orders o JOIN shopify_stores s ON o.shop_id=s.id WHERE o.id=%s", (order_id,), dictionary=True)[0]
+    profile = get_company_profile()
+    data = {"order": order, "profile": profile}
+    doc = _active_doc('label')
+    if not doc:
+        return ('Not configured', 404)
+    if doc['fill_mode'] == 'stamp':
+        buf = stamp_pdf(doc['file_path'], doc['coordinate_map_json'], data, doc['font_name'])
+    else:
+        merged = {**order, **{f"profile_{k}": v for k, v in profile.items()}}
+        buf = fill_pdf_form(doc['file_path'], doc['field_map_json'], merged)
+    return send_file(buf, as_attachment=True, download_name=f"label_{order['name']}.pdf", mimetype='application/pdf')

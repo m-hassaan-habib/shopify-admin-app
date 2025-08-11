@@ -1,4 +1,7 @@
 from flask import Blueprint, render_template, request
+import os, sys
+
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 from db import execute_query
 from datetime import datetime, timedelta
 from auth import require_login

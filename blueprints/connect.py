@@ -1,3 +1,7 @@
+import os, sys
+
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+
 from flask import Blueprint, render_template, request, flash, redirect, url_for
 from db import execute_query, execute_insert
 from services.shopify_client import test_shopify_connection

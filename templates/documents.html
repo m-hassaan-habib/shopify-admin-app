@@ -1,0 +1,65 @@
+<!-- templates/documents.html -->
+{% extends 'base.html' %}
+{% block content %}
+<div class="container py-4">
+  <h5 class="mb-3">Documents</h5>
+  <form method="post" enctype="multipart/form-data" class="row g-3 mb-4">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+    <div class="col-md-3">
+      <select name="doc_type" class="form-select" required>
+        <option value="">Select type</option>
+        <option value="money_order_front">Money Order Front</option>
+        <option value="money_order_back">Money Order Back</option>
+        <option value="label">Label</option>
+      </select>
+    </div>
+
+    <div class="col-md-3">
+      <input type="file" name="file" accept="application/pdf" class="form-control" required>
+    </div>
+
+    <div class="col-md-3">
+      <select name="fill_mode" class="form-select">
+        <option value="form">Form</option>
+        <option value="stamp">Stamp</option>
+      </select>
+    </div>
+
+    <div class="col-md-3">
+      <input type="text" name="font_name" class="form-control" placeholder="Font name (optional)">
+    </div>
+
+    <div class="col-12">
+      <label class="form-label small mb-1">Field Map JSON (front/label only)</label>
+      <textarea name="field_map_json" class="form-control" rows="6" placeholder='{"OrderNumber":"name","CustomerName":"customer_name"}'></textarea>
+    </div>
+
+    <div class="col-12">
+      <label class="form-label small mb-1">Coordinate Map JSON (stamp mode)</label>
+      <textarea name="coordinate_map_json" class="form-control" rows="6" placeholder='{"CustomerName":{"x":120,"y":640,"size":10,"source":"customer_name"}}'></textarea>
+    </div>
+
+    <div class="col-12">
+      <button class="btn btn-primary">Upload</button>
+    </div>
+
+  </form>
+  <table class="table table-sm align-middle">
+    <thead><tr><th>Type</th><th>File</th><th>Active</th><th>Version</th><th>Mode</th><th>Font</th><th>Uploaded</th></tr></thead>
+
+    <tbody>
+      {% for d in docs %}
+      <tr>
+        <td>{{ d.doc_type }}</td>
+        <td class="text-truncate" style="max-width:420px">{{ d.file_path }}</td>
+        <td>{{ 'Yes' if d.is_active else 'No' }}</td>
+        <td>{{ d.version }}</td>
+        <td>{{ d.fill_mode }}</td>
+        <td>{{ d.font_name or '' }}</td>
+        <td>{{ d.uploaded_at }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}

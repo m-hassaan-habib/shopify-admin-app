@@ -1,3 +1,8 @@
+import sys
+import os
+
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+
 from flask import Blueprint, render_template
 from db import execute_query
 from datetime import datetime, timedelta

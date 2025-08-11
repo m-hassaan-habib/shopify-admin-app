@@ -62,3 +62,33 @@ CREATE TABLE IF NOT EXISTS audit_logs (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     INDEX idx_action (action, created_at)
 );
+
+CREATE TABLE IF NOT EXISTS shop_documents (
+  id BIGINT AUTO_INCREMENT PRIMARY KEY,
+  doc_type ENUM('money_order_front','money_order_back','label') NOT NULL,
+  file_path VARCHAR(512) NOT NULL,
+  is_active TINYINT(1) NOT NULL DEFAULT 1,
+  version INT NOT NULL DEFAULT 1,
+  fill_mode ENUM('form','stamp') NOT NULL DEFAULT 'form',
+  font_name VARCHAR(64) NULL,
+  coordinate_map_json JSON NULL,
+  field_map_json JSON NULL,
+  uploaded_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  INDEX idx_shop_documents_type_active (doc_type, is_active)
+);
+
+
+CREATE TABLE IF NOT EXISTS company_profile (
+  id BIGINT AUTO_INCREMENT PRIMARY KEY,
+  name VARCHAR(255) NOT NULL,
+  address_line1 VARCHAR(255) NOT NULL,
+  address_line2 VARCHAR(255) NULL,
+  city VARCHAR(128) NOT NULL,
+  phone VARCHAR(64) NOT NULL,
+  from_block TEXT NULL,
+  updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
+
+INSERT INTO company_profile (name,address_line1,address_line2,city,phone,from_block)
+VALUES ('MIHRAAJ VENTURES','179-D Block, PCSIR Staff colony','College Road, Lahore','Lahore','03706237724',
+'From:\nMIHRAAJ VENTURES\n179-D Block, PCSIR Staff colony,\nCollege Road, Lahore\nCell: 03706237724');
